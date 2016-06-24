@@ -9,11 +9,11 @@ using System.Runtime.InteropServices;
 #endif
 [assembly: AssemblyCompany("Just Think")]
 [assembly: AssemblyProduct("HTTPServer")]
-[assembly: AssemblyCopyright("Copyright © 2012-2015 Just Think. All rights reserved.")]
+[assembly: AssemblyCopyright("Copyright © 2012-2016 Just Think. All rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-[assembly: AssemblyVersion("0.1.0.1")]
+[assembly: AssemblyVersion("0.1.0.2")]
 
 [assembly: ComVisible(false)]
 

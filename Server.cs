@@ -55,27 +55,51 @@ namespace HTTPServer
 		{
 			// Если "слушатель" был создан
 			// Остановим его
-			_listener?.Stop();
+			if (_listener != null)
+			{
+				_listener.Stop();
+			}
 		}
 
 		static void Main(string[] args)
 		{
-			Log.Info("Запускаем приложение...");
-			if (!SetCurrentDirectory())
-				return;
+			AppDomain.CurrentDomain.UnhandledException += (sender, e) => FatalExceptionObject(e.ExceptionObject);
+			try
+			{
+				Log.Info("Запускаем приложение...");
+				if (!SetCurrentDirectory())
+					return;
 
-			// Определим нужное максимальное количество потоков
-			// Пусть будет по 4 на каждый процессор
-			int maxThreadsCount = Environment.ProcessorCount * 4;
-			// Установим максимальное количество рабочих потоков
-			ThreadPool.SetMaxThreads(maxThreadsCount, maxThreadsCount);
-			// Установим минимальное количество рабочих потоков
-			ThreadPool.SetMinThreads(2, 2);
+				// Определим нужное максимальное количество потоков
+				// Пусть будет по 4 на каждый процессор
+				int maxThreadsCount = Environment.ProcessorCount * 4;
+				// Установим максимальное количество рабочих потоков
+				ThreadPool.SetMaxThreads(maxThreadsCount, maxThreadsCount);
+				// Установим минимальное количество рабочих потоков
+				ThreadPool.SetMinThreads(2, 2);
 
-			Settings.Initialization();
+				Settings.Initialization();
 
-			// Создадим новый сервер на порту
-			new Server(Settings.Port);
+				// Создадим новый сервер на порту
+				new Server(Settings.Port);
+			}
+			catch (Exception huh)
+			{
+				FatalExceptionHandler.Handle(huh);
+			}
+		}
+
+		static void FatalExceptionObject(object exceptionObject)
+		{
+			var huh = exceptionObject as Exception;
+			if (huh == null)
+			{
+				huh = new NotSupportedException(
+				  "Unhandled exception doesn't derive from System.Exception: "
+				   + exceptionObject.ToString()
+				);
+			}
+			FatalExceptionHandler.Handle(huh);
 		}
 
 		private static bool SetCurrentDirectory()
